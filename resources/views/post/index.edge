@@ -1,0 +1,77 @@
+@layout('layout')
+
+@section('content')
+<div class="box">
+    <h2 class="title">New Post</h2>
+  
+    <form action="/posts" method="POST">
+      {{ csrfField() }}
+  
+      <div class="field has-addons">
+        <div class="control is-expanded">
+          <input class="input" type="text" name="title" value="{{ old('title', '') }}" placeholder="Post title">
+        </div>
+        <div class="control is-expanded">
+            <input class="input" type="text" name="description" value="{{ old('description', '') }}" placeholder="Post description">
+          </div>
+        <div class="control">
+          <button type="submit" class="button is-primary">
+              Add Post
+          </button>
+        </div>
+      </div>
+  
+      {{ elIf('<p class="help is-danger">$self</p>', getErrorFor('title'), hasErrorFor('title')) }}
+    </form>
+  </div>
+    @if(old('notification'))
+        <div class="notification is-success">
+            {{ old('notification') }}
+        </div>
+    @endif
+  <div class="box">
+    <h1 class="title">Post List</h1>
+
+      <table class="table is-bordered is-striped is-narrow is-fullwidth">
+        <thead>
+          <tr>
+            <th>SN</th>
+            <th>Title</th>
+            <th>Description</th>
+            <th>Action</th> 
+          </tr>
+        </thead>
+        <tbody>
+          @each(post in posts)
+            <tr>
+              <td>
+                {{ post.id }}
+              </td>
+              <td>
+                {{ post.title }}
+              </td>
+              <td>
+                {{ post.description }}
+              </td>
+              <td>
+                <form action="{{ 'posts/' + post.id + '?_method=DELETE' }}" method="POST">
+                    {{ csrfField() }}
+                  
+                    <button type="submit" class="button is-danger is-outlined">
+                      <span>DELETE</span>
+                      <span class="icon is-small">
+                        <i class="fa fa-times" aria-hidden="true"></i>
+                      </span>
+                    </button>
+                  </form>
+              </td>
+            </tr>
+          @else
+            <tr>
+              <td colspan="4" class="has-text-centered">No task created yet!</td>
+            </tr>
+          @endeach
+        </tbody>
+      </table>
+  </div>
+@endsection
